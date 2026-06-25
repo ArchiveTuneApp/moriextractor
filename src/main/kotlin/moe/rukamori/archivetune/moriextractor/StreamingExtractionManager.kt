@@ -48,12 +48,16 @@ class StreamingExtractionManager(
     private val _extractorState = MutableStateFlow<ExtractorState>(ExtractorState.Idle)
     val extractorState: StateFlow<ExtractorState> = _extractorState
 
-    suspend fun extractAudioUrl(videoUrl: String): String =
+    suspend fun extractAudioUrl(
+        videoUrl: String,
+        userPoToken: String? = null,
+    ): String =
         withContext(Dispatchers.IO) {
             val normalizedVideoUrl = videoUrl.trim()
             if (normalizedVideoUrl.isBlank()) {
                 throw ArchiveTuneExtractorException("Video URL is missing")
             }
+            val normalizedUserPoToken = userPoToken?.trim()?.takeIf { it.isNotBlank() }
 
             val token = bearerToken.trim()
             if (token.isBlank()) {
@@ -67,6 +71,7 @@ class StreamingExtractionManager(
                         .get("$normalizedBaseUrl/api/extract") {
                             header("Authorization", "Bearer $token")
                             parameter("url", normalizedVideoUrl)
+                            normalizedUserPoToken?.let { parameter("po_token", it) }
                         }.bodyAsText()
                 val response = json.decodeFromString(BackendExtractorResponse.serializer(), raw)
                 val audioUrl = response.playableUrl.orEmpty()
