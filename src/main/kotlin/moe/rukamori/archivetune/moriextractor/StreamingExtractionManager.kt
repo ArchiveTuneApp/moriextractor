@@ -69,7 +69,7 @@ class StreamingExtractionManager(
                             parameter("url", normalizedVideoUrl)
                         }.bodyAsText()
                 val response = json.decodeFromString(BackendExtractorResponse.serializer(), raw)
-                val audioUrl = response.audioUrl?.trim().orEmpty()
+                val audioUrl = response.playableUrl.orEmpty()
                 if (response.success && audioUrl.isNotBlank() && audioUrl.isHttpUrl()) {
                     _extractorState.value =
                         ExtractorState.Success(
