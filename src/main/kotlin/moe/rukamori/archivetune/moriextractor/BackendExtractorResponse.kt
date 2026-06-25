@@ -17,5 +17,16 @@ data class BackendExtractorResponse(
     val thumbnail: String? = null,
     @SerialName("audio_url")
     val audioUrl: String? = null,
+    @SerialName("direct_url")
+    val directUrl: String? = null,
     val error: String? = null,
-)
+) {
+    val playableUrl: String?
+        get() =
+            directUrl
+                ?.trim()
+                ?.takeIf { it.isNotBlank() }
+                ?: audioUrl
+                    ?.trim()
+                    ?.takeIf { it.isNotBlank() }
+}
