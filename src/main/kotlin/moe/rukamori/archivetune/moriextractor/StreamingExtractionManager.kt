@@ -52,6 +52,7 @@ class StreamingExtractionManager(
     suspend fun extractAudioUrl(
         videoUrl: String,
         userPoToken: String? = null,
+        cookies: String? = null,
     ): String =
         withContext(Dispatchers.IO) {
             val normalizedVideoUrl = videoUrl.trim()
@@ -59,6 +60,7 @@ class StreamingExtractionManager(
                 throw ArchiveTuneExtractorException("Video URL is missing")
             }
             val normalizedUserPoToken = userPoToken?.trim()?.takeIf { it.isNotBlank() }
+            val normalizedCookies = cookies?.trim()?.takeIf { it.isNotBlank() }
 
             val token = bearerToken.trim()
             if (token.isBlank()) {
@@ -73,6 +75,7 @@ class StreamingExtractionManager(
                             header("Authorization", "Bearer $token")
                             parameter("url", normalizedVideoUrl)
                             normalizedUserPoToken?.let { parameter("po_token", it) }
+                            normalizedCookies?.let { parameter("cookies", it) }
                         }.bodyAsText()
 
                 val response =
