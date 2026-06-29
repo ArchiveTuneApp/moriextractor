@@ -9,6 +9,7 @@ package moe.rukamori.archivetune.moriextractor
 
 sealed interface ExtractorState {
     data object Idle : ExtractorState
+
     data object Processing : ExtractorState
 
     data class Success(

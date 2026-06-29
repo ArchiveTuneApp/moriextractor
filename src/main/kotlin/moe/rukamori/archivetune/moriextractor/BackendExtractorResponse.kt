@@ -38,7 +38,6 @@ data class BackendExtractorResponse(
                     ?.trim()
                     ?.takeIf { it.isNotBlank() }
 
-
     val playableUrl: String?
         get() =
             proxyPlayableUrl
